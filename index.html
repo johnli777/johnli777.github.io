@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuzhe (John) Li — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg-card: #111118;
+    --bg-card-hover: #16161f;
+    --text: #e8e6e3;
+    --text-muted: #8a8a99;
+    --accent: #64ffda;
+    --accent-dim: rgba(100, 255, 218, 0.12);
+    --accent-glow: rgba(100, 255, 218, 0.25);
+    --warm: #ff8f6b;
+    --purple: #b18cfe;
+    --border: rgba(255,255,255,0.06);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s var(--ease);
+  }
+  nav.scrolled { padding: 0.8rem 3rem; }
+  .nav-logo { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); letter-spacing: 0.08em; }
+  .nav-links { display: flex; gap: 1.4rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.73rem; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-muted); text-decoration: none;
+    position: relative; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px;
+    background: var(--accent); transform: scaleX(0); transform-origin: right;
+    transition: transform 0.4s var(--ease);
+  }
+  .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+  .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text-muted); margin: 5px 0; transition: all 0.3s; }
+
+  .hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 8rem 3rem 4rem; position: relative; overflow: hidden;
+  }
+  .hero-bg-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(100,255,218,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(100,255,218,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+  .hero-glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(120px); opacity: 0.15; pointer-events: none; }
+  .hero-glow-1 { top: -10%; right: 10%; background: var(--accent); }
+  .hero-glow-2 { bottom: 0; left: 5%; background: var(--purple); opacity: 0.08; }
+  .hero-content { position: relative; max-width: 860px; }
+  .hero-tag { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s var(--ease) 0.2s forwards; }
+  .hero h1 { font-family: var(--serif); font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1.1; font-weight: 400; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s var(--ease) 0.4s forwards; }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero-desc { font-size: 1.1rem; color: var(--text-muted); max-width: 580px; line-height: 1.8; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.8s var(--ease) 0.6s forwards; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s var(--ease) 0.8s forwards; }
+
+  .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.8rem; border-radius: 6px; font-family: var(--sans); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; transition: all 0.35s var(--ease); cursor: pointer; border: none; }
+  .btn-primary { background: var(--accent); color: var(--bg); }
+  .btn-primary:hover { box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
+  .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+  .btn-warm { background: var(--warm); color: var(--bg); }
+  .btn-warm:hover { box-shadow: 0 0 30px rgba(255,143,107,0.3); transform: translateY(-2px); }
+
+  section { padding: 6rem 3rem; }
+  .section-label { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.8rem; }
+  .section-title { font-family: var(--serif); font-size: clamp(1.8rem, 3.5vw, 2.6rem); margin-bottom: 3rem; line-height: 1.2; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .about-text p { color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.98rem; }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; transition: all 0.35s var(--ease); }
+  .stat-card:hover { border-color: rgba(100,255,218,0.15); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+  .stat-number { font-family: var(--serif); font-size: 2rem; color: var(--accent); line-height: 1; margin-bottom: 0.4rem; }
+  .stat-label { font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.04em; }
+
+  .timeline { position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--accent), var(--purple), transparent); }
+  .timeline-item { padding-left: 2.5rem; margin-bottom: 3rem; position: relative; }
+  .timeline-item::before { content: ''; position: absolute; left: -4px; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .timeline-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.3rem; }
+  .timeline-role { font-family: var(--serif); font-size: 1.3rem; }
+  .timeline-date { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); letter-spacing: 0.05em; }
+  .timeline-company { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .timeline-points { list-style: none; }
+  .timeline-points li { position: relative; padding-left: 1.2rem; margin-bottom: 0.6rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+  .timeline-points li::before { content: '▹'; position: absolute; left: 0; color: var(--accent); }
+
+  .skills-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .skill-category { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.35s var(--ease); }
+  .skill-category:hover { border-color: rgba(100,255,218,0.12); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+  .skill-cat-title { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .skill-tag { padding: 0.35rem 0.85rem; border-radius: 100px; font-size: 0.8rem; font-weight: 500; background: var(--accent-dim); color: var(--accent); transition: all 0.25s; }
+  .skill-tag:hover { background: rgba(100,255,218,0.2); transform: scale(1.05); }
+  .skill-tag.warm { background: rgba(255,143,107,0.12); color: var(--warm); }
+  .skill-tag.warm:hover { background: rgba(255,143,107,0.2); }
+  .skill-tag.purple { background: rgba(177,140,254,0.12); color: var(--purple); }
+  .skill-tag.purple:hover { background: rgba(177,140,254,0.2); }
+
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.4s var(--ease); position: relative; overflow: hidden; }
+  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--purple)); transform: scaleX(0); transform-origin: left; transition: transform 0.5s var(--ease); }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-card:hover { border-color: rgba(100,255,218,0.12); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.35); }
+  .project-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem; font-size: 1.2rem; }
+  .project-card h3 { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 0.6rem; }
+  .project-card p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem; line-height: 1.7; }
+  .project-tech { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem; }
+  .project-tech span { font-family: var(--mono); font-size: 0.7rem; padding: 0.25rem 0.6rem; border-radius: 4px; background: rgba(255,255,255,0.04); color: var(--text-muted); }
+  .project-link { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: gap 0.3s var(--ease); }
+  .project-link:hover { gap: 0.7rem; }
+
+  .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .video-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.35s var(--ease); }
+  .video-card:hover { border-color: rgba(100,255,218,0.12); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+  .video-placeholder { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, rgba(100,255,218,0.05), rgba(177,140,254,0.05)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; border-bottom: 1px solid var(--border); }
+  .video-placeholder .play-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(100,255,218,0.15); display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease); }
+  .video-card:hover .play-icon { background: rgba(100,255,218,0.25); transform: scale(1.1); }
+  .video-placeholder .play-icon svg { width: 24px; height: 24px; fill: var(--accent); margin-left: 3px; }
+  .video-placeholder span { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .video-info { padding: 1.5rem; }
+  .video-info h3 { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 0.5rem; }
+  .video-info p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+  .video-card iframe { width: 100%; aspect-ratio: 16/9; border: none; display: block; border-bottom: 1px solid var(--border); }
+
+  .mindmap-wrapper { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem; overflow-x: auto; }
+  .mindmap-center { text-align: center; margin-bottom: 2rem; }
+  .mindmap-center span { display: inline-block; font-family: var(--serif); font-size: 1.3rem; padding: 0.8rem 2rem; border-radius: 100px; background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(100,255,218,0.2); }
+  .mindmap-branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+  .mindmap-branch { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; transition: all 0.3s var(--ease); }
+  .mindmap-branch:hover { border-color: rgba(100,255,218,0.1); transform: translateY(-2px); }
+  .mindmap-branch h4 { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+  .mindmap-branch.warm-branch h4 { color: var(--warm); }
+  .mindmap-branch.purple-branch h4 { color: var(--purple); }
+  .mindmap-branch ul { list-style: none; }
+  .mindmap-branch ul li { font-size: 0.82rem; color: var(--text-muted); padding: 0.25rem 0; padding-left: 1rem; position: relative; }
+  .mindmap-branch ul li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
+  .mindmap-branch.warm-branch ul li::before { color: var(--warm); }
+  .mindmap-branch.purple-branch ul li::before { color: var(--purple); }
+
+  .goals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .goal-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.35s var(--ease); position: relative; overflow: hidden; }
+  .goal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .goal-card:nth-child(1)::before { background: var(--accent); }
+  .goal-card:nth-child(2)::before { background: var(--warm); }
+  .goal-card:nth-child(3)::before { background: var(--purple); }
+  .goal-card:hover { border-color: rgba(100,255,218,0.12); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+  .goal-number { font-family: var(--serif); font-size: 2.5rem; line-height: 1; margin-bottom: 0.8rem; opacity: 0.15; }
+  .goal-card:nth-child(1) .goal-number { color: var(--accent); }
+  .goal-card:nth-child(2) .goal-number { color: var(--warm); }
+  .goal-card:nth-child(3) .goal-number { color: var(--purple); }
+  .goal-card h3 { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 1rem; }
+  .goal-details { list-style: none; }
+  .goal-details li { font-size: 0.82rem; color: var(--text-muted); padding: 0.5rem 0; border-bottom: 1px solid var(--border); line-height: 1.6; }
+  .goal-details li:last-child { border-bottom: none; }
+  .goal-details li strong { color: var(--text); font-weight: 500; }
+
+  .resume-banner { background: linear-gradient(135deg, rgba(100,255,218,0.06), rgba(177,140,254,0.06)); border: 1px solid var(--border); border-radius: 12px; padding: 3rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .resume-banner-text h3 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 0.4rem; }
+  .resume-banner-text p { font-size: 0.9rem; color: var(--text-muted); }
+
+  .resume-display { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 3rem 3.5rem; max-width: 900px; margin: 0 auto; position: relative; }
+  .resume-display::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--purple), var(--warm)); border-radius: 12px 12px 0 0; }
+  .resume-header-block { text-align: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .resume-header-block h3 { font-family: var(--serif); font-size: 1.8rem; margin-bottom: 0.4rem; }
+  .resume-header-block .resume-contact-line { font-size: 0.8rem; color: var(--text-muted); line-height: 1.8; }
+  .resume-header-block .resume-contact-line a { color: var(--accent); text-decoration: none; }
+  .resume-header-block .resume-contact-line a:hover { text-decoration: underline; }
+  .resume-section-title { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  .resume-entry { margin-bottom: 1.5rem; }
+  .resume-entry-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.15rem; }
+  .resume-entry-header h4 { font-family: var(--serif); font-size: 1.05rem; font-weight: 400; }
+  .resume-entry-header .resume-date { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); }
+  .resume-entry-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem; }
+  .resume-bullets { list-style: none; }
+  .resume-bullets li { position: relative; padding-left: 1.1rem; margin-bottom: 0.4rem; font-size: 0.84rem; color: var(--text-muted); line-height: 1.65; }
+  .resume-bullets li::before { content: '▹'; position: absolute; left: 0; color: var(--accent); font-size: 0.8rem; }
+  .resume-skills-line { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.7; }
+  .resume-skills-line strong { color: var(--text); font-weight: 500; }
+  .resume-project-title { font-family: var(--serif); font-size: 1rem; margin-bottom: 0.4rem; }
+  @media (max-width: 768px) { .resume-display { padding: 2rem 1.5rem; } }
+
+  .edu-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .edu-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.35s var(--ease); }
+  .edu-card:hover { border-color: rgba(100,255,218,0.12); transform: translateY(-3px); }
+  .edu-degree { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 0.3rem; }
+  .edu-school { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.2rem; }
+  .edu-date { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.05em; }
+  .edu-detail { margin-top: 0.8rem; font-size: 0.85rem; color: var(--text-muted); }
+
+  .contact-section { text-align: center; padding: 8rem 3rem; }
+  .contact-section .section-title { margin-bottom: 1rem; }
+  .contact-desc { color: var(--text-muted); max-width: 500px; margin: 0 auto 2.5rem; font-size: 1rem; }
+  .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .contact-links a { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; text-decoration: none; color: var(--text); background: var(--bg-card); border: 1px solid var(--border); transition: all 0.3s var(--ease); }
+  .contact-links a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+
+  footer { text-align: center; padding: 2rem 3rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-muted); font-family: var(--mono); letter-spacing: 0.03em; }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: block; }
+    .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(20px); padding: 1.5rem 2rem; gap: 1rem; border-bottom: 1px solid var(--border); }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    .about-grid, .projects-grid, .edu-cards, .video-grid { grid-template-columns: 1fr; }
+    .goals-grid { grid-template-columns: 1fr; }
+    .mindmap-branches { grid-template-columns: 1fr 1fr; }
+    .resume-banner { flex-direction: column; text-align: center; }
+    .contact-section { padding: 5rem 1.5rem; }
+  }
+  @media (max-width: 480px) { .mindmap-branches { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-logo">yuzhe.li</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#videos">Videos</a></li>
+    <li><a href="#mindmap">Mind Map</a></li>
+    <li><a href="#goals">Goals</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#resume">Resume</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+  <div class="hero-content">
+    <p class="hero-tag">CS Graduate Student · Data & ML Engineer</p>
+    <h1>Hi, I'm <em>Yuzhe (John) Li</em></h1>
+    <p class="hero-desc">MS Computer Science at Northeastern University. I build data pipelines, ML systems, and full-stack applications — turning complex data into actionable insights.</p>
+    <div class="hero-actions">
+      <a href="mailto:yuzhe.john.li777@gmail.com?subject=Hello%20Yuzhe&body=Hi%20Yuzhe%2C%0A%0AI%20came%20across%20your%20portfolio%20and%20would%20like%20to%20connect." class="btn btn-primary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Get In Touch
+      </a>
+      <a href="#resume" class="btn btn-warm">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Download Resume
+      </a>
+      <a href="https://github.com/johnli777" class="btn btn-outline" target="_blank">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="https://linkedin.com/in/" class="btn btn-outline" target="_blank">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p class="section-label">About Me</p>
+        <h2 class="section-title">Building at the intersection of<br>data & intelligence</h2>
+        <p>I'm a graduate student in <strong>Computer Science at Northeastern University</strong> with a background in <strong>Physics from the University of Toronto</strong>. My work spans data engineering, machine learning, and full-stack development.</p>
+        <p>With professional experience at <strong>Huawei Technologies</strong> and in enterprise IT, I've built real-time data pipelines, analytics dashboards, and content systems that drive measurable business impact.</p>
+        <p>Currently deepening my expertise in <strong>deep learning, reinforcement learning, and ML systems</strong> — with a focus on bridging the gap between research and production.</p>
+      </div>
+      <div class="stats-grid reveal" style="transition-delay: 0.15s;">
+        <div class="stat-card"><div class="stat-number">3.9</div><div class="stat-label">GPA at Northeastern</div></div>
+        <div class="stat-card"><div class="stat-number">2+</div><div class="stat-label">Years Professional Exp</div></div>
+        <div class="stat-card"><div class="stat-number">90%</div><div class="stat-label">Manual Entry Reduced</div></div>
+        <div class="stat-card"><div class="stat-number">25K</div><div class="stat-label">Content Views in 3 Mo</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="background: var(--bg-card);">
+  <div class="container">
+    <p class="section-label reveal">Experience</p>
+    <h2 class="section-title reveal">Where I've worked</h2>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-header">
+          <span class="timeline-role">IT Engineer</span>
+          <span class="timeline-date">Apr 2023 — Jun 2024</span>
+        </div>
+        <p class="timeline-company">China New Higher Education Group · Beijing</p>
+        <ul class="timeline-points">
+          <li>Implemented Alibaba Cloud DTS replication for a SaaS tuition billing system, automating real-time data synchronization and cutting manual entry by 90%.</li>
+          <li>Built SQL transformation logic for payment classification and reconciliation, achieving 99% accuracy in financial tracking.</li>
+          <li>Designed hierarchical reporting framework with role-based permissions and drill-down dashboards, improving management effectiveness by 30%.</li>
+          <li>Integrated SSO between internal portal and BI platform, boosting user query efficiency by 50%.</li>
+        </ul>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-header">
+          <span class="timeline-role">Information Development Engineer</span>
+          <span class="timeline-date">Apr 2022 — Apr 2023</span>
+        </div>
+        <p class="timeline-company">Huawei Technologies Co., Ltd. · Beijing</p>
+        <ul class="timeline-points">
+          <li>Built a DataX-based data ingestion pipeline to consolidate multi-source platform data; performed analysis driving a 30% increase in page views.</li>
+          <li>Owned web front-end/back-end deliverables using JavaScript/HTML/CSS with API-driven data access.</li>
+          <li>Produced bilingual technical guides and eBooks achieving 25K views in 3 months and a 20% increase in customer engagement.</li>
+          <li>Managed social media analytics workflows, increasing total content views by 20%.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <p class="section-label reveal">Technical Skills</p>
+    <h2 class="section-title reveal">Tools of the trade</h2>
+    <div class="skills-categories">
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">Languages</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span><span class="skill-tag">Java</span><span class="skill-tag">JavaScript</span><span class="skill-tag">SQL</span><span class="skill-tag">HTML/CSS</span>
+        </div>
+      </div>
+      <div class="skill-category reveal" style="transition-delay:0.1s;">
+        <div class="skill-cat-title">Data & ML</div>
+        <div class="skill-tags">
+          <span class="skill-tag warm">Pandas</span><span class="skill-tag warm">NumPy</span><span class="skill-tag warm">SciPy</span><span class="skill-tag warm">Scikit-learn</span><span class="skill-tag warm">Matplotlib</span><span class="skill-tag warm">Seaborn</span>
+        </div>
+      </div>
+      <div class="skill-category reveal" style="transition-delay:0.2s;">
+        <div class="skill-cat-title">Deep Learning & AI</div>
+        <div class="skill-tags">
+          <span class="skill-tag purple">PyTorch</span><span class="skill-tag purple">TensorFlow</span><span class="skill-tag purple">Keras</span><span class="skill-tag purple">Cursor</span><span class="skill-tag purple">Claude Code</span>
+        </div>
+      </div>
+      <div class="skill-category reveal" style="transition-delay:0.3s;">
+        <div class="skill-cat-title">Web & Infrastructure</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Next.js</span><span class="skill-tag">Flask</span><span class="skill-tag">Tailwind CSS</span><span class="skill-tag">Git</span><span class="skill-tag">Docker</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="background: var(--bg-card);">
+  <div class="container">
+    <p class="section-label reveal">Projects</p>
+    <h2 class="section-title reveal">Things I've built</h2>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-icon">🎬</div>
+        <h3>Metflix — Movie Discovery Platform</h3>
+        <p>Netflix-style web app for movie discovery with dynamic filtering by genre, language, and country. Features trailers, dynamic posters, and rating-based sorting.</p>
+        <div class="project-tech"><span>Python</span><span>Next.js</span><span>Flask</span><span>Tailwind</span><span>TMDb API</span></div>
+        <a href="https://github.com/blueif16/movieflex.git" class="project-link" target="_blank">View on GitHub →</a>
+      </div>
+      <div class="project-card reveal" style="transition-delay:0.1s;">
+        <div class="project-icon">🛡️</div>
+        <h3>Decoding Cyberattacks</h3>
+        <p>Analyzed 65K+ firewall/network records, engineered 32 features, and trained ensemble ML models (LR, RF, XGBoost, SVM) for malicious traffic detection.</p>
+        <div class="project-tech"><span>Python</span><span>Pandas</span><span>Scikit-learn</span><span>Matplotlib</span></div>
+        <a href="https://github.com/johnli777/Cybersecurity" class="project-link" target="_blank">View on GitHub →</a>
+      </div>
+      <div class="project-card reveal" style="transition-delay:0.2s;">
+        <div class="project-icon">🧠</div>
+        <h3>Few-Shot Brain Tumor Segmentation</h3>
+        <p>Deep learning research project for medical image segmentation using few-shot learning techniques with k-shot evaluation pipeline. CS7150 final project.</p>
+        <div class="project-tech"><span>PyTorch</span><span>Medical Imaging</span><span>Few-Shot Learning</span></div>
+        <span class="project-link" style="opacity:0.5;">In Progress</span>
+      </div>
+      <div class="project-card reveal" style="transition-delay:0.3s;">
+        <div class="project-icon">🎯</div>
+        <h3>RL Movie Recommender</h3>
+        <p>MovieLens 1M recommendation system using SVD embeddings and a DQN agent, trained to outperform greedy baselines. CS5180 RL course project.</p>
+        <div class="project-tech"><span>Python</span><span>DQN</span><span>SVD</span><span>XGBoost</span></div>
+        <span class="project-link" style="opacity:0.5;">Course Project</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEOS -->
+<section id="videos">
+  <div class="container">
+    <p class="section-label reveal">Introduction Videos</p>
+    <h2 class="section-title reveal">Get to know me</h2>
+    <div class="video-grid">
+      <div class="video-card reveal">
+        <iframe src="https://northeastern.hosted.panopto.com/Panopto/Pages/Embed.aspx?id=073fa8e1-1178-4e10-8f80-b4290023db43&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=all" allowfullscreen allow="autoplay" aria-label="Panopto Embedded Video Player"></iframe>
+        <div class="video-info">
+          <h3>Professional Introduction</h3>
+          <p>A 45–60 second elevator pitch covering my background in data analysis, ML projects, and what I'm looking for in my next opportunity.</p>
+        </div>
+      </div>
+      <div class="video-card reveal" style="transition-delay:0.1s;">
+        <iframe src="https://northeastern.hosted.panopto.com/Panopto/Pages/Embed.aspx?id=f2495dea-a970-4323-af2a-b42900252438&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=all" allowfullscreen allow="autoplay" aria-label="Panopto Embedded Video Player"></iframe>
+        <div class="video-info">
+          <h3>Tell Me About Yourself</h3>
+          <p>A structured ~2 minute interview response walking through my education, professional experience, projects, and career direction.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MIND MAP -->
+<section id="mindmap" style="background: var(--bg-card);">
+  <div class="container">
+    <p class="section-label reveal">Career Strategy</p>
+    <h2 class="section-title reveal">Mind map</h2>
+    <div class="mindmap-wrapper reveal">
+      <div class="mindmap-center"><span>Career Preparation</span></div>
+      <div class="mindmap-branches">
+        <div class="mindmap-branch">
+          <h4>Personal Brand</h4>
+          <ul><li>Analytical</li><li>Detail-oriented</li><li>Quick learner</li><li>Reliable</li><li>Strong problem-solving</li></ul>
+        </div>
+        <div class="mindmap-branch warm-branch">
+          <h4>Technical Skills</h4>
+          <ul><li>Python, SQL, Java, JS</li><li>Pandas, NumPy, Matplotlib</li><li>Scikit-learn, PyTorch</li><li>Git/GitHub, Jupyter</li><li>Cloud data tools</li></ul>
+        </div>
+        <div class="mindmap-branch purple-branch">
+          <h4>Experience</h4>
+          <ul><li>Huawei — Data analysis</li><li>Workflow automation</li><li>Technical documentation</li><li>CNHEG — Data pipelines</li><li>SQL reporting & SSO</li></ul>
+        </div>
+        <div class="mindmap-branch">
+          <h4>Projects</h4>
+          <ul><li>Cyberattack detection</li><li>Movie recommendation</li><li>Brain tumor segmentation</li><li>Firewall log analysis</li></ul>
+        </div>
+        <div class="mindmap-branch warm-branch">
+          <h4>Career Goals</h4>
+          <ul><li>Secure strong co-op</li><li>Improve interview skills</li><li>Data / ML / SWE roles</li><li>Build meaningful career</li><li>AI-related industries</li></ul>
+        </div>
+        <div class="mindmap-branch purple-branch">
+          <h4>Professional Dev</h4>
+          <ul><li>Resume improvement</li><li>Elevator pitch practice</li><li>Interview storytelling</li><li>Networking</li><li>Portfolio building</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMART GOALS -->
+<section id="goals">
+  <div class="container">
+    <p class="section-label reveal">Planning</p>
+    <h2 class="section-title reveal">SMART Goals</h2>
+    <div class="goals-grid">
+      <div class="goal-card reveal">
+        <div class="goal-number">01</div>
+        <h3>Internship / Co-op Success</h3>
+        <ul class="goal-details">
+          <li><strong>Specific:</strong> Secure and complete a co-op or internship in software engineering, QA, data, or ML.</li>
+          <li><strong>Measurable:</strong> Apply to 8+ roles per week, attend every interview fully prepared, track all applications.</li>
+          <li><strong>Achievable:</strong> Leveraging existing academic projects, technical skills, and prior professional experience.</li>
+          <li><strong>Relevant:</strong> Gaining real industry experience strengthens my long-term technical career foundation.</li>
+          <li><strong>Time-Bound:</strong> Secure an opportunity within the next 3–6 months.</li>
+        </ul>
+      </div>
+      <div class="goal-card reveal" style="transition-delay:0.1s;">
+        <div class="goal-number">02</div>
+        <h3>Technical Skill Growth</h3>
+        <ul class="goal-details">
+          <li><strong>Specific:</strong> Strengthen Python, SQL, Git, debugging, and software testing skills.</li>
+          <li><strong>Measurable:</strong> 5+ hours of practice per week, 2 coding exercises per week, 1 polished portfolio project per term.</li>
+          <li><strong>Achievable:</strong> Builds directly on skills already developed through coursework and projects.</li>
+          <li><strong>Relevant:</strong> Strong fundamentals are essential for SWE, QA, data, and ML roles.</li>
+          <li><strong>Time-Bound:</strong> Follow this routine from now until graduation, with monthly reviews.</li>
+        </ul>
+      </div>
+      <div class="goal-card reveal" style="transition-delay:0.2s;">
+        <div class="goal-number">03</div>
+        <h3>Professional Communication</h3>
+        <ul class="goal-details">
+          <li><strong>Specific:</strong> Improve self-introduction, interview answers, and professional communication.</li>
+          <li><strong>Measurable:</strong> Practice elevator pitch 3x/week, revise resume monthly, prepare 5 STAR stories.</li>
+          <li><strong>Achievable:</strong> Strong experiences to draw from; regular practice builds confidence.</li>
+          <li><strong>Relevant:</strong> Communication is essential for interviews, teamwork, and career growth.</li>
+          <li><strong>Time-Bound:</strong> Complete first full set of stories and polished scripts within 4 weeks.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="background: var(--bg-card);">
+  <div class="container">
+    <p class="section-label reveal">Education</p>
+    <h2 class="section-title reveal">Academic background</h2>
+    <div class="edu-cards">
+      <div class="edu-card reveal">
+        <div class="edu-degree">M.S. Computer Science</div>
+        <div class="edu-school">Northeastern University · San Jose, CA</div>
+        <div class="edu-date">Sep 2024 — Dec 2026</div>
+        <div class="edu-detail">GPA: 3.9 · Focus: Machine Learning, Deep Learning, Reinforcement Learning</div>
+      </div>
+      <div class="edu-card reveal" style="transition-delay:0.1s;">
+        <div class="edu-degree">B.Sc. Physics</div>
+        <div class="edu-school">University of Toronto · Toronto, Canada</div>
+        <div class="edu-date">Sep 2016 — Jun 2021</div>
+        <div class="edu-detail">Minor: Geoscience & Mathematics</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUME -->
+<section id="resume">
+  <div class="container">
+    <p class="section-label reveal">Resume</p>
+    <h2 class="section-title reveal">My resume</h2>
+    <div class="resume-banner reveal">
+      <div class="resume-banner-text">
+        <h3>Want a copy?</h3>
+        <p>Download the PDF version of my resume to share or print.</p>
+      </div>
+      <a href="./Yuzhe_Li_Resume.pdf" download class="btn btn-primary" style="white-space:nowrap;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PDF
+      </a>
+    </div>
+    <div class="resume-display reveal">
+      <!-- Header -->
+      <div class="resume-header-block">
+        <h3>Yuzhe (John) Li</h3>
+        <div class="resume-contact-line">
+          San Jose, CA &nbsp;|&nbsp; <a href="tel:+16696892090">(+1) 669-689-2090</a> &nbsp;|&nbsp; NEU MSCS &nbsp;|&nbsp; TN Visa<br>
+          <a href="mailto:yuzhe.john.li777@gmail.com">yuzhe.john.li777@gmail.com</a> &nbsp;|&nbsp;
+          <a href="https://github.com/johnli777" target="_blank">GitHub</a> &nbsp;|&nbsp;
+          <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+
+      <!-- Education -->
+      <div class="resume-section-title">Education</div>
+      <div class="resume-entry">
+        <div class="resume-entry-header">
+          <h4>University of Toronto</h4>
+          <span class="resume-date">Sep 2016 — Jun 2021</span>
+        </div>
+        <div class="resume-entry-sub">Bachelor of Science · Major: Physics · Minor: Geoscience & Math · Toronto, Canada</div>
+      </div>
+      <div class="resume-entry">
+        <div class="resume-entry-header">
+          <h4>Northeastern University</h4>
+          <span class="resume-date">Sep 2024 — Dec 2026</span>
+        </div>
+        <div class="resume-entry-sub">Master of Science · Major: Computer Science · San Jose, USA</div>
+      </div>
+
+      <!-- Experience -->
+      <div class="resume-section-title">Professional Experience</div>
+      <div class="resume-entry">
+        <div class="resume-entry-header">
+          <h4>Information Development Engineer — Huawei Technologies</h4>
+          <span class="resume-date">Apr 2022 — Apr 2023</span>
+        </div>
+        <div class="resume-entry-sub">Beijing, China</div>
+        <ul class="resume-bullets">
+          <li>Built a DataX-based data ingestion pipeline to consolidate multi-source platform data; performed analysis using Python (pandas, NumPy) + SQL + Excel, uncovering insights that drove a 30% increase in product-platform page views.</li>
+          <li>Owned web front-end/back-end deliverables; implemented lightweight services/scripts using JavaScript/HTML/CSS with API-driven data access, improving scenario-fit and aligning product features with real user needs.</li>
+          <li>Produced bilingual technical configuration guides and product solution eBooks; leveraged data modeling and knowledge-graph-style linking to align content with user scenarios, achieving 25K views in 3 months and a 20% increase in global customer engagement.</li>
+          <li>Managed social media campaigns and implemented analytics workflows using Excel dashboards, increasing total content views by 20%.</li>
+        </ul>
+      </div>
+      <div class="resume-entry">
+        <div class="resume-entry-header">
+          <h4>IT Engineer — China New Higher Education Group</h4>
+          <span class="resume-date">Apr 2023 — Jun 2024</span>
+        </div>
+        <div class="resume-entry-sub">Beijing, China</div>
+        <ul class="resume-bullets">
+          <li>Implemented Alibaba Cloud DTS replication for a SaaS tuition billing system, mapping tables/fields to enable real-time synchronization; automated ingestion and updates, cutting manual data entry by 90% and improving processing efficiency by 40%.</li>
+          <li>Built SQL-based transformation logic to classify, aggregate, and reconcile full payment data across organization and time-cycle dimensions; added custom rules to achieve 99% accuracy in payment tracking/monitoring.</li>
+          <li>Designed a hierarchical reporting framework and role-based data permissions; developed drill-down dashboards using SQL datasets, improving finance and student management effectiveness by 30%.</li>
+          <li>Streamlined single sign-on between the internal office portal and the BI analytics platform, enabling real-time payment analysis and improving user query efficiency by 50%.</li>
+        </ul>
+      </div>
+
+      <!-- Skills -->
+      <div class="resume-section-title">Proficiency</div>
+      <div class="resume-skills-line"><strong>Programming Languages:</strong> Python, Java, JavaScript, HTML, CSS, SQL</div>
+      <div class="resume-skills-line"><strong>Data & ML (Python):</strong> Pandas, NumPy, SciPy, Scikit-learn, Matplotlib, Seaborn</div>
+      <div class="resume-skills-line"><strong>Deep Learning:</strong> PyTorch, TensorFlow, Keras</div>
+      <div class="resume-skills-line"><strong>AI-Assisted Development:</strong> Cursor, Claude Code</div>
+
+      <!-- Projects -->
+      <div class="resume-section-title">Projects</div>
+      <div class="resume-entry">
+        <div class="resume-project-title">Metflix — Movie Discovery Platform</div>
+        <div class="resume-entry-sub">Python, Next.js, Flask, Tailwind CSS, TMDb API</div>
+        <ul class="resume-bullets">
+          <li>Built a Netflix-style web app for movie discovery with dynamic filtering (genre/language/country) and responsive UI.</li>
+          <li>Implemented backend services in Flask to integrate external APIs and deliver structured data to the frontend.</li>
+          <li>Delivered UI features including trailers, dynamic posters, and rating-based sorting, emphasizing usability and speed.</li>
+        </ul>
+      </div>
+      <div class="resume-entry">
+        <div class="resume-project-title">Decoding Cyberattacks — Cybersecurity Log Analysis</div>
+        <div class="resume-entry-sub">Python, Pandas, scikit-learn, Matplotlib</div>
+        <ul class="resume-bullets">
+          <li>Analyzed 65,532 firewall/network records; expanded features 12 → 32 (e.g., bytes/sec, packets/sec) and trained LR/RF/XGBoost/SVM models for malicious-traffic detection.</li>
+          <li>Tuned models with 5-fold stratified CV and SMOTE; visualized performance with confusion matrices, boxplots, and feature importance to validate results.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    <p class="section-label reveal">Contact</p>
+    <h2 class="section-title reveal">Let's connect</h2>
+    <p class="contact-desc reveal">I'm always open to discussing data engineering, ML research, or potential opportunities.</p>
+    <div class="contact-links reveal" style="transition-delay:0.1s;">
+      <a href="mailto:yuzhe.john.li777@gmail.com?subject=Hello%20Yuzhe&body=Hi%20Yuzhe%2C%0A%0AI%20came%20across%20your%20portfolio%20and%20would%20like%20to%20connect.">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        yuzhe.john.li777@gmail.com
+      </a>
+      <a href="https://github.com/johnli777" target="_blank">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="https://linkedin.com/in/" target="_blank">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a href="tel:+16696892090">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        (669) 689-2090
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer><p>&copy; 2026 Yuzhe (John) Li · Built with care</p></footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
